@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius-card: 8px;
+    --radius-small: 8px;
+    --radius-button: 6px;
+    --font-display: 'Barlow Condensed', 'Mulish', sans-serif;
+    --font-body: 'Mulish', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --bg2: var(--card);
+    --bg3: var(--c2);
+    --text1: var(--t);
+    --text2: var(--t2);
+    --text3: var(--t3);
+    --accent: var(--p);
+    --accent2: var(--pm);
+    --green-bg: color-mix(in srgb, var(--green) 12%, transparent);
+    --amber-bg: color-mix(in srgb, var(--amber) 14%, transparent);
+    --red-bg: color-mix(in srgb, var(--red) 14%, transparent);
+    --violet: var(--p);
+    --orange: var(--o);
+    --border: var(--bd);
+    --border2: var(--bdl);
+    --shadow: 0 16px 48px color-mix(in srgb, var(--p) 14%, transparent);
+    --shadow-soft: 0 8px 24px color-mix(in srgb, var(--p) 10%, transparent);
+    --sidebar-w: 248px;
+    --topbar-h: 68px;
+    --font: var(--font-body);
+    --mono: var(--font-mono);
+    --display: var(--font-display);
+    --radius: var(--radius-small);
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scrollbar-color: var(--bdl) transparent;
+    scrollbar-width: thin;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--bdl);
+    border-radius: 999px;
+  }
+}

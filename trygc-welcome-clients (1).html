@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TryGC · New Client Welcome Kit</title>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ========================================
+     TRYGC BRAND TOKENS (from Brand Manual V2 2025)
+     CLIENT EDITION — Orange-dominant
+     ======================================== */
+
+  :root {
+    --gc-orange: #E8630C;
+    --gc-purple: #52358C;
+    --gc-lavender: #A798BF;
+    --gc-peach: #E3A579;
+    --gc-orange-soft: #FDF2E9;
+    --gc-purple-soft: #EEEAF4;
+    --gc-lavender-soft: #F3EFF8;
+    --gc-peach-soft: #FCF1E9;
+    --gc-orange-mid: rgba(232,99,12,0.12);
+    --gc-purple-mid: rgba(82,53,140,0.08);
+
+    /* Primary = Orange for client edition */
+    --primary: var(--gc-orange);
+    --primary-soft: var(--gc-orange-soft);
+    --primary-grad: linear-gradient(135deg, #E8630C, #FF8A40);
+
+    --ink-900: #1A1220;
+    --ink-700: #433651;
+    --ink-500: #6B5E78;
+    --ink-300: #A89FB0;
+    --ink-100: #E8E3EC;
+    --bg: #FBFAFC;
+    --white: #FFFFFF;
+    --border: #EEE9F1;
+    --border-strong: #DCD4E2;
+
+    --font-display: 'Barlow Condensed', 'Mulish', sans-serif;
+    --font-body: 'Mulish', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --r-sm: 8px;
+    --r: 14px;
+    --r-lg: 20px;
+    --r-xl: 28px;
+
+    --shadow-sm: 0 1px 3px rgba(82,53,140,0.06);
+    --shadow: 0 4px 20px rgba(82,53,140,0.08);
+    --shadow-lg: 0 16px 48px rgba(82,53,140,0.12);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--ink-900);
+    line-height: 1.5;
+    font-weight: 400;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content:'';
+    position: fixed;
+    top: -120px; right: -120px;
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, var(--gc-orange-mid) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content:'';
+    position: fixed;
+    bottom: -120px; left: -120px;
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, var(--gc-purple-mid) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .shell {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 32px 22px 72px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* BRAND HEADER */
+  .brand-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 36px;
+  }
+
+  .brand-lockup { display: flex; align-items: center; gap: 12px; }
+
+  .gc-mark { width: 42px; height: 42px; flex-shrink: 0; }
+
+  .brand-wordmark {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: var(--ink-900);
+    line-height: 1;
+  }
+  .brand-wordmark span { color: var(--gc-orange); }
+
+  .brand-sub {
+    font-size: 10.5px;
+    letter-spacing: 1.8px;
+    color: var(--ink-500);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 3px;
+  }
+
+  .brand-meta {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-500);
+    letter-spacing: 0.5px;
+    text-align: right;
+  }
+
+  .brand-meta .meta-tag {
+    display: inline-block;
+    background: var(--gc-orange-soft);
+    color: var(--gc-orange);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 52px 40px 48px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+
+  .hero-pattern {
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 220px; height: 220px;
+    opacity: 0.14;
+    pointer-events: none;
+  }
+
+  .hero-tag-line {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2.5px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-tag-line .tg-speak { color: var(--gc-orange); }
+  .hero-tag-line .tg-connect,
+  .hero-tag-line .tg-impact { color: var(--gc-purple); }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(2.3rem, 5.5vw, 3.9rem);
+    line-height: 0.98;
+    letter-spacing: -1px;
+    margin-bottom: 18px;
+    color: var(--ink-900);
+    position: relative;
+    z-index: 1;
+  }
+  .hero h1 .accent-orange { color: var(--gc-orange); }
+  .hero h1 .accent-purple { color: var(--gc-purple); }
+
+  .hero-lede {
+    font-size: 1.05rem;
+    color: var(--ink-700);
+    max-width: 580px;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+  }
+
+  .audience-badge {
+    display: inline-block;
+    background: var(--gc-orange);
+    color: white;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* CARDS & SECTIONS */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 32px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: var(--shadow); }
+
+  .section-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 11.5px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gc-orange);
+    margin-bottom: 10px;
+  }
+
+  .section-kicker::before {
+    content: '';
+    width: 24px; height: 2px;
+    background: currentColor;
+    display: inline-block;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.8rem;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    color: var(--ink-900);
+    margin-bottom: 10px;
+  }
+
+  .section-sub {
+    font-size: 0.94rem;
+    color: var(--ink-700);
+    line-height: 1.7;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-top: 20px;
+  }
+
+  .feature-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 22px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 48px; height: 3px;
+    background: var(--gc-orange);
+    border-radius: 0 0 3px 0;
+    transition: width 0.25s ease;
+  }
+
+  .feature-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+  .feature-card:hover::before { width: 100%; }
+
+  .feature-icon {
+    width: 42px; height: 42px;
+    border-radius: 11px;
+    background: var(--gc-orange-soft);
+    color: var(--gc-orange);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 14px;
+  }
+
+  .feature-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink-900);
+    margin-bottom: 6px;
+    letter-spacing: -0.2px;
+  }
+
+  .feature-desc {
+    font-size: 0.86rem;
+    color: var(--ink-700);
+    line-height: 1.6;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 24px 0 0;
+  }
+
+  .stat-block {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 18px 16px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.7rem;
+    color: var(--gc-orange);
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+
+  .stat-label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.72rem;
+    color: var(--ink-500);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* MARKETS */
+  .markets-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .market-tile {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 18px 14px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .market-tile:hover {
+    border-color: var(--gc-orange);
+    transform: translateY(-2px);
+  }
+
+  .market-flag { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+
+  .market-code {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--ink-900);
+    letter-spacing: 0.5px;
+  }
+
+  .market-curr {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-500);
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  /* WORKFLOW */
+  .workflow {
+    position: relative;
+    padding-left: 28px;
+    margin-top: 22px;
+  }
+
+  .workflow::before {
+    content: '';
+    position: absolute;
+    left: 11px; top: 12px; bottom: 12px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--gc-orange), var(--gc-purple));
+    border-radius: 2px;
+  }
+
+  .step {
+    position: relative;
+    padding: 10px 0 22px 18px;
+  }
+
+  .step::before {
+    content: '';
+    position: absolute;
+    left: -22px; top: 14px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 3px solid var(--gc-orange);
+    box-shadow: 0 0 0 4px var(--white);
+  }
+
+  .step-label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 1.2px;
+    color: var(--gc-orange);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .step-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink-900);
+    margin-bottom: 4px;
+  }
+
+  .step-desc {
+    font-size: 0.88rem;
+    color: var(--ink-700);
+    line-height: 1.6;
+  }
+
+  /* CALLOUT */
+  .callout {
+    border-left: 4px solid var(--gc-orange);
+    background: var(--gc-orange-soft);
+    padding: 18px 22px;
+    border-radius: 0 var(--r) var(--r) 0;
+    margin: 20px 0;
+  }
+
+  .callout-label {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--gc-orange);
+    margin-bottom: 4px;
+  }
+
+  .callout-text {
+    font-size: 0.9rem;
+    color: var(--ink-900);
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  /* CHECKLIST */
+  .checklist-wrap { margin-top: 22px; }
+
+  .progress-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--gc-orange-soft);
+    padding: 14px 20px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+
+  .progress-label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--gc-orange);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--gc-orange);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-count {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--gc-orange);
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: var(--r);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    border: 1px solid transparent;
+  }
+
+  .check-item:hover {
+    background: var(--bg);
+    border-color: var(--border);
+  }
+
+  .check-item.checked .check-text {
+    color: var(--ink-300);
+    text-decoration: line-through;
+  }
+
+  .check-box {
+    width: 22px; height: 22px;
+    border: 2px solid var(--border-strong);
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: transparent;
+    transition: all 0.2s;
+  }
+
+  .check-item.checked .check-box {
+    background: var(--gc-orange);
+    border-color: var(--gc-orange);
+    color: white;
+  }
+
+  .check-text {
+    font-size: 0.9rem;
+    color: var(--ink-900);
+    line-height: 1.5;
+    font-weight: 500;
+  }
+
+  .check-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+    vertical-align: middle;
+    letter-spacing: 0.5px;
+  }
+
+  .check-tag.essential {
+    background: var(--gc-orange);
+    color: white;
+  }
+
+  .check-tag.recommended {
+    background: var(--gc-lavender-soft);
+    color: var(--gc-purple);
+  }
+
+  /* FAQ */
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+  }
+  .faq-item:last-child { border-bottom: none; }
+
+  .faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--ink-900);
+    gap: 14px;
+  }
+
+  .faq-toggle {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--gc-orange-soft);
+    color: var(--gc-orange);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+    flex-shrink: 0;
+    transition: transform 0.25s ease, background 0.25s ease;
+  }
+
+  .faq-item.open .faq-toggle {
+    transform: rotate(45deg);
+    background: var(--gc-orange);
+    color: white;
+  }
+
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    font-size: 0.9rem;
+    color: var(--ink-700);
+    line-height: 1.7;
+  }
+
+  .faq-item.open .faq-answer {
+    max-height: 400px;
+    padding-top: 12px;
+  }
+
+  /* CTA */
+  .cta-band {
+    background: var(--primary-grad);
+    color: white;
+    border-radius: var(--r-xl);
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-top: 28px;
+  }
+
+  .cta-band::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+
+  .cta-band::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -60px;
+    width: 240px; height: 240px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+
+  .cta-band h3 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+    letter-spacing: -0.5px;
+  }
+
+  .cta-band p {
+    font-size: 0.95rem;
+    opacity: 0.95;
+    max-width: 480px;
+    margin: 0 auto 20px;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    background: white;
+    color: var(--gc-orange);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.88rem;
+    letter-spacing: 1px;
+    padding: 14px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 40px 0 8px;
+    color: var(--ink-500);
+    font-size: 0.78rem;
+    margin-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .footer-brand .gc-mark { width: 28px; height: 28px; }
+
+  .footer-brand span {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--ink-900);
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+  }
+
+  .footer-brand span em {
+    color: var(--gc-orange);
+    font-style: normal;
+  }
+
+  .footer-tag {
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 3px;
+    font-weight: 700;
+    color: var(--ink-500);
+    margin-top: 14px;
+  }
+
+  .footer-tag .t-s { color: var(--gc-orange); }
+  .footer-tag .t-c, .footer-tag .t-i { color: var(--gc-purple); }
+
+  @media (max-width: 700px) {
+    .hero { padding: 38px 24px; }
+    .hero-pattern { width: 140px; height: 140px; top: -10px; right: -20px; }
+    .card { padding: 24px 20px; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .markets-grid { grid-template-columns: repeat(2, 1fr); }
+    .cta-band { padding: 30px 24px; }
+    .section-title { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute;" aria-hidden="true">
+  <defs>
+    <symbol id="gc-mark" viewBox="0 0 56 56">
+      <circle cx="22" cy="20" r="15" stroke="#E8630C" stroke-width="4.5" fill="none"/>
+      <circle cx="22" cy="20" r="6.8" fill="#E8630C"/>
+      <circle cx="40" cy="9" r="3.6" fill="#52358C"/>
+      <path d="M 46 36 A 10 10 0 1 0 36 46 L 36 52 L 42 46 Z" fill="#52358C"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="shell">
+
+  <!-- BRAND HEADER -->
+  <header class="brand-bar">
+    <div class="brand-lockup">
+      <svg class="gc-mark"><use href="#gc-mark"/></svg>
+      <div>
+        <div class="brand-wordmark">TRY<span>GC</span></div>
+        <div class="brand-sub">Grand Community Marketing</div>
+      </div>
+    </div>
+    <div class="brand-meta">
+      <div class="meta-tag">CLIENT WELCOME KIT</div>
+      <div>KSA · UAE · KWT · EGY</div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <svg class="hero-pattern" viewBox="0 0 200 200">
+      <g opacity="0.9">
+        <circle cx="30" cy="30" r="20" stroke="#E8630C" stroke-width="3" fill="none"/>
+        <circle cx="30" cy="30" r="9" fill="#E8630C"/>
+        <circle cx="85" cy="30" r="20" fill="#52358C"/>
+        <circle cx="140" cy="30" r="20" stroke="#E8630C" stroke-width="3" fill="none"/>
+        <circle cx="140" cy="30" r="9" fill="#E8630C"/>
+        <circle cx="30" cy="85" r="20" fill="#52358C"/>
+        <path d="M75 75 A 20 20 0 1 0 95 95 L 95 105 L 105 95 Z" fill="#E8630C"/>
+        <circle cx="140" cy="85" r="20" fill="#A798BF"/>
+        <circle cx="30" cy="140" r="20" stroke="#52358C" stroke-width="3" fill="none"/>
+        <circle cx="30" cy="140" r="9" fill="#52358C"/>
+        <circle cx="85" cy="140" r="20" fill="#E3A579"/>
+        <path d="M130 130 A 20 20 0 1 0 150 150 L 150 160 L 160 150 Z" fill="#52358C"/>
+      </g>
+    </svg>
+
+    <div class="audience-badge">★ FOR NEW CLIENTS</div>
+
+    <div class="hero-tag-line">
+      <span class="tg-speak">SPEAK.</span>
+      <span class="tg-connect">CONNECT.</span>
+      <span class="tg-impact">IMPACT.</span>
+    </div>
+
+    <h1>Welcome to the<br><span class="accent-orange">Grand</span> <span class="accent-purple">Community.</span></h1>
+
+    <p class="hero-lede">
+      Everything you need to work with us — how we deliver, what we commit to, and what you'll need to send over to get moving.
+    </p>
+  </section>
+
+  <!-- Who we are -->
+  <div class="card">
+    <div class="section-kicker">Who we are</div>
+    <h2 class="section-title">Influencer marketing,<br>run like operations.</h2>
+    <p class="section-sub">TryGC (Grand Community Marketing) is a full-cycle influencer partner for brands across Egypt and the GCC. We own the messy middle — sourcing, invitations, logistics, posting coverage, QA, and reporting — so your team gets clean outcomes, not scrambled updates.</p>
+
+    <div class="stats-row">
+      <div class="stat-block">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Active Markets</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">1000+</div>
+        <div class="stat-label">Creators Network</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">18</div>
+        <div class="stat-label">Stage Workflow</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">24h</div>
+        <div class="stat-label">Report SLA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What you get -->
+  <div class="card">
+    <div class="section-kicker">What you get</div>
+    <h2 class="section-title">Built to deliver, priced to scale.</h2>
+    <p class="section-sub">Every engagement covers the full lifecycle — not a handful of DMs and an invoice. You pay for outcomes and documentation, not effort and guesswork.</p>
+
+    <div class="card-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">Creator Supply</div>
+        <div class="feature-desc">Qualified influencer sourcing matched to your niche, tier, city, and platform — with pre-vetted availability.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🗂</div>
+        <div class="feature-title">Campaign Management</div>
+        <div class="feature-desc">Full operational control: invitations, confirmations, briefs, scheduling, logistics, reminders.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📹</div>
+        <div class="feature-title">Posting Coverage</div>
+        <div class="feature-desc">Coverage collection, archiving, and missing coverage recovery — you always know what posted and what didn't.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✔️</div>
+        <div class="feature-title">QA Against Brief</div>
+        <div class="feature-desc">Every post checked for mentions, tags, links, timing, and content compliance — pass/fail documented.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Client Reporting</div>
+        <div class="feature-desc">Clean reports with target vs achieved, coverage links, gaps, insights — delivered on schedule.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">One Point of Contact</div>
+        <div class="feature-desc">Your AM owns your account. No shuffling between teams, no lost context, no silent handoffs.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Markets -->
+  <div class="card">
+    <div class="section-kicker">Where we operate</div>
+    <h2 class="section-title">Four markets. One standard.</h2>
+    <p class="section-sub">Budgets always labeled in local currency with absolute values — no ambiguity, no back-and-forth conversion.</p>
+
+    <div class="markets-grid">
+      <div class="market-tile">
+        <span class="market-flag">🇸🇦</span>
+        <div class="market-code">KSA</div>
+        <div class="market-curr">SAR</div>
+      </div>
+      <div class="market-tile">
+        <span class="market-flag">🇦🇪</span>
+        <div class="market-code">UAE</div>
+        <div class="market-curr">AED</div>
+      </div>
+      <div class="market-tile">
+        <span class="market-flag">🇰🇼</span>
+        <div class="market-code">KUWAIT</div>
+        <div class="market-curr">KWD</div>
+      </div>
+      <div class="market-tile">
+        <span class="market-flag">🇪🇬</span>
+        <div class="market-code">EGYPT</div>
+        <div class="market-curr">EGP</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">How we quote</div>
+      <div class="callout-text">Proposals land with absolute values and currency labels (e.g. SAR 250K, not "250"). Scale is always clear. We state what's gifted vs paid vs hybrid up front — no surprises at invoice.</div>
+    </div>
+  </div>
+
+  <!-- How we work -->
+  <div class="card">
+    <div class="section-kicker">How your campaign runs</div>
+    <h2 class="section-title">From brief to report,<br>six client-facing phases.</h2>
+    <p class="section-sub">Behind the scenes it's an 18-stage workflow. On your side, here's what you see and when.</p>
+
+    <div class="workflow">
+      <div class="step">
+        <div class="step-label">Phase 01 · Intake</div>
+        <div class="step-title">Brief + Kick-Off</div>
+        <div class="step-desc">We collect brand, target, platforms, deliverables, dates, tags. If anything's missing, we flag it immediately — we don't launch with gaps.</div>
+      </div>
+      <div class="step">
+        <div class="step-label">Phase 02 · Setup</div>
+        <div class="step-title">Influencer List + Approvals</div>
+        <div class="step-desc">We build a qualified list, you review and approve. Replacements identified for any rejections before we send invitations.</div>
+      </div>
+      <div class="step">
+        <div class="step-label">Phase 03 · Outreach</div>
+        <div class="step-title">Invitations + Confirmations</div>
+        <div class="step-desc">Invitations go out, reminders follow, confirmed list locked. You get a status view — not just a number.</div>
+      </div>
+      <div class="step">
+        <div class="step-label">Phase 04 · Live</div>
+        <div class="step-title">Execution + Logistics</div>
+        <div class="step-desc">Visit or delivery scheduled, executed, documented. Live issues escalated to you immediately if decisions are needed.</div>
+      </div>
+      <div class="step">
+        <div class="step-label">Phase 05 · Coverage</div>
+        <div class="step-title">Coverage + QA</div>
+        <div class="step-desc">Posts collected, archived, QA'd against your brief. Missing coverage worked into active recovery — not forgotten.</div>
+      </div>
+      <div class="step">
+        <div class="step-label">Phase 06 · Close</div>
+        <div class="step-title">Report + Lessons</div>
+        <div class="step-desc">Target vs achieved, coverage links, gaps explained, insights logged. Campaign closed with documentation — not a verbal wrap.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLAs -->
+  <div class="card">
+    <div class="section-kicker">Response commitments</div>
+    <h2 class="section-title">Our SLA to you.</h2>
+    <p class="section-sub">These are not aspirational. They're the internal standard we run to.</p>
+
+    <div class="card-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">2 hours</div>
+        <div class="feature-desc">Client response time during business hours — questions, approvals, escalations.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <div class="feature-title">4 hours</div>
+        <div class="feature-desc">Full campaign setup after brief intake — tracker, folder, system entry.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📩</div>
+        <div class="feature-title">24 hours</div>
+        <div class="feature-desc">First wave of influencer invitations sent after list approval.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📄</div>
+        <div class="feature-title">24–48 hours</div>
+        <div class="feature-desc">Final report delivered after campaign closure — not "next week."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Onboarding Checklist -->
+  <div class="card">
+    <div class="section-kicker">What we need from you</div>
+    <h2 class="section-title">Your onboarding checklist.</h2>
+    <p class="section-sub">Tap each one as you send it over. The faster this clears, the faster we launch.</p>
+
+    <div class="checklist-wrap">
+      <div class="progress-bar">
+        <span class="progress-label">Brief Readiness</span>
+        <div class="progress-track"><div class="progress-fill" id="cProgress" style="width:0%"></div></div>
+        <span class="progress-count" id="cCount">0 / 10</span>
+      </div>
+
+      <div id="cChecklist"></div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="card">
+    <div class="section-kicker">Good to know</div>
+    <h2 class="section-title">Fast answers.</h2>
+
+    <div class="faq-item">
+      <div class="faq-question">How do you vet influencers? <span class="faq-toggle">+</span></div>
+      <div class="faq-answer">Every creator is matched against your niche, tier, city, and platform. We validate availability before presenting a list — you approve before any invite goes out. Blocklisted accounts (repeat no-shows, prior coverage failures) are filtered upstream.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">What if a creator doesn't post on time? <span class="faq-toggle">+</span></div>
+      <div class="faq-answer">We move to Missing Coverage Recovery within 24 hours of SLA breach — structured follow-ups, documented escalation, and if needed, replacement activation. You get a tracker view, not a surprise at report time.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Can you run campaigns in Arabic only? <span class="faq-toggle">+</span></div>
+      <div class="faq-answer">Yes. KSA campaigns run Arabic-first (KSA dialect, not formal MSA). Kuwait and UAE are mixed EN/AR depending on creator and audience. Egypt defaults to Arabic with EN support where relevant.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">What's included in the final report? <span class="faq-toggle">+</span></div>
+      <div class="faq-answer">Target vs achieved (influencer count, posting coverage, deliverables), per-influencer post links, QA pass/fail status, any gaps with documented reasons, lessons learned, and campaign-level insights. Delivered in 24–48 hours of closure.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Who do I contact for escalations? <span class="faq-toggle">+</span></div>
+      <div class="faq-answer">Your Account Manager is first line for any decision, change, or concern. For operational escalations (delays, missing coverage beyond SLA), the Ops Lead is copied automatically. You never need to chase multiple people.</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-band">
+    <h3>Ready to Launch Your First Campaign?</h3>
+    <p>Share your brief and we'll come back with a qualified influencer shortlist, budget breakdown, and execution timeline within 48 hours.</p>
+    <a href="#" class="cta-btn">SEND US YOUR BRIEF →</a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand">
+      <svg class="gc-mark"><use href="#gc-mark"/></svg>
+      <span>TRY<em>GC</em> · GRAND COMMUNITY MARKETING</span>
+    </div>
+    <div>Client Welcome Kit · 2025 · Confidential</div>
+    <div class="footer-tag">
+      <span class="t-s">SPEAK.</span> <span class="t-c">CONNECT.</span> <span class="t-i">IMPACT.</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const clientChecklist = [
+    { t: "Brand name, campaign name, and internal reference", tag:"essential" },
+    { t: "Target market(s): KSA / UAE / Kuwait / Egypt — and specific cities", tag:"essential" },
+    { t: "Platforms required: TikTok / Instagram / YouTube / X", tag:"essential" },
+    { t: "Target influencer count + posting coverage count", tag:"essential" },
+    { t: "Campaign dates (start + end) and any hard deadlines", tag:"essential" },
+    { t: "Budget with currency and scale (e.g. SAR 250K)", tag:"essential" },
+    { t: "Campaign type: visit / delivery / hybrid (with split if hybrid)", tag:"essential" },
+    { t: "Content brief: required tags, mentions, links, guidelines", tag:"essential" },
+    { t: "Client approvers: actual names + WhatsApp + email", tag:"recommended" },
+    { t: "Any restrictions: exclusions, competitor blocks, tone notes", tag:"recommended" },
+  ];
+
+  function renderChecklist(containerId, items, progressId, countId) {
+    const container = document.getElementById(containerId);
+    items.forEach((item, i) => {
+      const el = document.createElement('div');
+      el.className = 'check-item';
+      el.innerHTML = `
+        <div class="check-box">✓</div>
+        <div class="check-text">${item.t}<span class="check-tag ${item.tag}">${item.tag.toUpperCase()}</span></div>
+      `;
+      el.addEventListener('click', () => {
+        el.classList.toggle('checked');
+        updateProgress(containerId, progressId, countId);
+      });
+      container.appendChild(el);
+    });
+    updateProgress(containerId, progressId, countId);
+  }
+
+  function updateProgress(containerId, progressId, countId) {
+    const items = document.querySelectorAll(`#${containerId} .check-item`);
+    const checked = document.querySelectorAll(`#${containerId} .check-item.checked`).length;
+    const total = items.length;
+    const pct = total ? Math.round((checked/total)*100) : 0;
+    document.getElementById(progressId).style.width = pct + '%';
+    document.getElementById(countId).textContent = `${checked} / ${total}`;
+  }
+
+  renderChecklist('cChecklist', clientChecklist, 'cProgress', 'cCount');
+
+  document.querySelectorAll('.faq-question').forEach(q => {
+    q.addEventListener('click', () => {
+      q.parentElement.classList.toggle('open');
+    });
+  });
+</script>
+
+</body>
+</html>
