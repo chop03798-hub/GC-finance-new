@@ -28,18 +28,29 @@ describe('App auth flow', () => {
       removeEventListener: vi.fn(),
       dispatchEvent: vi.fn(),
     })))
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        user: {
+          id: 'user-admin',
+          name: 'Admin Operator',
+          email: 'admin@trygc.local',
+          role: 'super_admin',
+          region: 'All Regions',
+        },
+      }),
+    }))
   })
 
-  it('renders the workspace after signing in with the seeded admin account', async () => {
+  it('renders the workspace after signing in with the server-backed admin account', async () => {
     const { container } = render(<App />)
 
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'admin@trygc.local' } })
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'admin123' } })
     fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
 
-    await Promise.resolve()
-
+    expect(await screen.findByRole('button', { name: /overview/i })).toBeInTheDocument()
     expect(container.querySelector('.app-shell')).not.toBeNull()
-    expect(screen.getByRole('button', { name: /overview/i })).toBeInTheDocument()
   }, 15000)
 })

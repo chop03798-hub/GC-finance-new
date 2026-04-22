@@ -1270,6 +1270,12 @@ input, select, textarea { font-family: var(--font); outline: none; }
   grid-column: 1 / -1;
 }
 
+.auth-caption {
+  grid-column: 1 / -1;
+  color: var(--text3);
+  font-size: 12px;
+}
+
 .topbar-bot {
   min-width: 128px;
   display: inline-flex;

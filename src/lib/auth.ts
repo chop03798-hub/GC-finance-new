@@ -16,10 +16,6 @@ export interface ManagedUser extends AppUser {
   isSeeded?: boolean
 }
 
-interface SeedUser extends AppUser {
-  password: string
-}
-
 export const AUTH_SESSION_KEY = 'gc-ksa-auth-session-v1'
 export const MANAGED_USERS_KEY = 'gc-ksa-managed-users-v1'
 export const SEEDED_USER_OVERRIDES_KEY = 'gc-ksa-seeded-overrides-v1'
@@ -41,12 +37,14 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   finance: 'Finance',
 }
 
-export const SEEDED_USERS: SeedUser[] = [
-  { id: 'user-admin', name: 'Admin Operator', email: 'admin@trygc.local', password: 'admin123', role: 'super_admin', region: 'All Regions' },
-  { id: 'user-manager', name: 'Sales Manager', email: 'manager@trygc.local', password: 'manager123', role: 'sales_manager', region: 'KSA' },
-  { id: 'user-finance', name: 'Finance Controller', email: 'finance@trygc.local', password: 'finance123', role: 'finance', region: 'Finance' },
-  { id: 'user-joud', name: 'Joud Ismael', email: 'joud@trygc.local', password: 'sales123', role: 'sales_rep', region: 'Riyadh', repName: 'Joud Ismael' },
+export const SEEDED_USERS: AppUser[] = [
+  { id: 'user-admin', name: 'Admin Operator', email: 'admin@trygc.local', role: 'super_admin', region: 'All Regions' },
+  { id: 'user-manager', name: 'Sales Manager', email: 'manager@trygc.local', role: 'sales_manager', region: 'KSA' },
+  { id: 'user-finance', name: 'Finance Controller', email: 'finance@trygc.local', role: 'finance', region: 'Finance' },
+  { id: 'user-joud', name: 'Joud Ismael', email: 'joud@trygc.local', role: 'sales_rep', region: 'Riyadh', repName: 'Joud Ismael' },
 ]
+
+export const SEEDED_USER_EMAILS = SEEDED_USERS.map((user) => user.email.toLowerCase())
 
 function normalizePage(pageId: string) {
   return pageId.toLowerCase()
@@ -59,27 +57,16 @@ const ACCESS_BY_ROLE: Record<UserRole, string[]> = {
   finance: ['overview', 'contracts', 'revenue', 'commissions', 'clients', 'settings'],
 }
 
-export function sanitizeUser(user: SeedUser): AppUser {
-  const { password: _password, ...safeUser } = user
-  return { ...safeUser, role: coerceUserRole(safeUser.role) }
+export function sanitizeUser(user: AppUser): AppUser {
+  return { ...user, role: coerceUserRole(user.role) }
 }
 
-export function authenticateUser(
+export function authenticateManagedUser(
   email: string,
   password: string,
   managedUsers: ManagedUser[] = [],
-  seededOverrides: SeededUserOverrides = {},
 ): AppUser | null {
   const normalizedEmail = email.trim().toLowerCase()
-  const seededMatch = SEEDED_USERS.find(
-    (user) => user.email.toLowerCase() === normalizedEmail && user.password === password
-  )
-  if (seededMatch) {
-    const base = sanitizeUser(seededMatch)
-    const overrides = seededOverrides[seededMatch.id] ?? {}
-    return { ...base, ...overrides, role: coerceUserRole(overrides.role ?? base.role) }
-  }
-
   const managedMatch = managedUsers.find(
     (user) => user.email.toLowerCase() === normalizedEmail && user.password === password
   )

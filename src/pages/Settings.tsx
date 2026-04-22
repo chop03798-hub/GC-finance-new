@@ -521,7 +521,7 @@ export default function Settings() {
                     <h4>{user.name}</h4>
                     <span className="agent-health healthy">{ROLE_LABELS[user.role]}</span>
                   </div>
-                  <p>{user.email}</p>
+                  <p>Reserved system account</p>
                   <div className="agent-file-label">{user.region || 'Workspace access'}</div>
                 </div>
               ))}

@@ -1,18 +1,21 @@
 import { useState } from 'react'
 
 interface AuthScreenProps {
-  onLogin: (email: string, password: string) => string | null
+  onLogin: (email: string, password: string) => Promise<string | null>
 }
 
 export default function AuthScreen({ onLogin }: AuthScreenProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    const nextError = onLogin(email, password)
+    setSubmitting(true)
+    const nextError = await onLogin(email, password)
     setError(nextError ?? '')
+    setSubmitting(false)
   }
 
   return (
@@ -50,7 +53,10 @@ export default function AuthScreen({ onLogin }: AuthScreenProps) {
             />
           </label>
           {error && <div className="auth-error">{error}</div>}
-          <button className="btn btn-primary auth-submit" type="submit">Sign In</button>
+          <button className="btn btn-primary auth-submit" type="submit" disabled={submitting}>
+            {submitting ? 'Signing In…' : 'Sign In'}
+          </button>
+          <div className="auth-caption">Use your assigned workspace login. Demo credentials are hidden from the interface.</div>
         </form>
       </div>
     </div>

@@ -24,6 +24,10 @@ function roleBadgeStyle(role: UserRole) {
   return map[role]
 }
 
+function redactSeededEmail() {
+  return 'Hidden in UI'
+}
+
 export default function UserManagement() {
   const { managedUsers, addManagedUser, updateManagedUser, deleteManagedUser,
           seededUserOverrides, updateSeededUserOverride, currentUser } = useApp()
@@ -106,7 +110,7 @@ export default function UserManagement() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
         <div style={{ fontSize: 13, color: 'var(--text2)' }}>
-          {allUsers.length} users · {seededUsers.length} built-in · {managedUsers.length} managed
+          {allUsers.length} users · {seededUsers.length} system · {managedUsers.length} managed
         </div>
         <button className="btn btn-primary" onClick={openAdd}>+ Add User</button>
       </div>
@@ -139,7 +143,9 @@ export default function UserManagement() {
                       <span style={{ marginLeft: 6, fontSize: 10, color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 12%, transparent)', borderRadius: 999, padding: '2px 7px', fontWeight: 700 }}>YOU</span>
                     )}
                   </td>
-                  <td style={{ fontFamily: 'var(--mono)', fontSize: 12 }}>{user.email}</td>
+                  <td style={{ fontFamily: 'var(--mono)', fontSize: 12 }}>
+                    {isSeeded ? <span style={{ color: 'var(--text3)' }}>{redactSeededEmail()}</span> : user.email}
+                  </td>
                   <td>
                     {isEditingThisSeeded ? (
                       <select
@@ -168,7 +174,7 @@ export default function UserManagement() {
                   </td>
                   <td style={{ fontFamily: 'var(--mono)', fontSize: 12 }}>
                     {isSeeded ? (
-                      <span style={{ color: 'var(--text3)' }}>built-in</span>
+                      <span style={{ color: 'var(--text3)' }}>server-managed</span>
                     ) : (
                       <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                         <span>{showPasswords[user.id] ? (user as ManagedUser).password : '••••••'}</span>
@@ -180,7 +186,7 @@ export default function UserManagement() {
                   </td>
                   <td>
                     <span style={{ fontSize: 10, color: isSeeded ? 'var(--text3)' : 'var(--accent)', fontWeight: 600 }}>
-                      {isSeeded ? 'Built-in' : 'Managed'}
+                      {isSeeded ? 'System' : 'Managed'}
                     </span>
                     {isSeeded && seededUserOverrides[user.id] && (
                       <span style={{ marginLeft: 6, fontSize: 9, color: 'var(--amber)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.04em' }}>overridden</span>

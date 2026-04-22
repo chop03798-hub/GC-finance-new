@@ -9,7 +9,8 @@ import {
   AUTH_SESSION_KEY,
   MANAGED_USERS_KEY,
   SEEDED_USER_OVERRIDES_KEY,
-  authenticateUser,
+  SEEDED_USER_EMAILS,
+  authenticateManagedUser,
   coerceUserRole,
   roleCanAccessPage,
   roleCanEditPage,
@@ -43,7 +44,7 @@ interface WorkspaceDataContextValue {
   settings: AppSettings
   setSettings: (patch: Partial<AppSettings>) => void
   currentUser: AppUser | null
-  login: (email: string, password: string) => string | null
+  login: (email: string, password: string) => Promise<string | null>
   logout: () => void
   managedUsers: ManagedUser[]
   addManagedUser: (user: Omit<ManagedUser, 'id' | 'createdAt'>) => string | null
@@ -188,11 +189,39 @@ export function WorkspaceDataProvider({ children }: PropsWithChildren) {
     localStorage.setItem(SEEDED_USER_OVERRIDES_KEY, JSON.stringify(seededUserOverrides))
   }, [seededUserOverrides])
 
-  const login = (email: string, password: string) => {
-    const user = authenticateUser(email, password, managedUsers, seededUserOverrides)
-    if (!user) return 'Invalid email or password.'
-    setCurrentUser(user)
-    return null
+  const login = async (email: string, password: string) => {
+    const managedUser = authenticateManagedUser(email, password, managedUsers)
+    if (managedUser) {
+      setCurrentUser(managedUser)
+      return null
+    }
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+
+      if (response.ok) {
+        const payload = await response.json() as { user?: AppUser }
+        if (payload.user) {
+          const seededOverride = seededUserOverrides[payload.user.id] ?? {}
+          const seededUser = {
+            ...payload.user,
+            ...seededOverride,
+            role: coerceUserRole(seededOverride.role ?? payload.user.role),
+          }
+          setCurrentUser(seededUser)
+          return null
+        }
+      }
+
+      if (response.status === 401) return 'Invalid email or password.'
+      return 'Sign-in service is unavailable right now.'
+    } catch {
+      return 'Sign-in service is unavailable right now.'
+    }
   }
 
   const updateSeededUserOverride = (id: string, patch: Partial<Pick<AppUser, 'role' | 'region' | 'repName'>>) => {
@@ -203,7 +232,7 @@ export function WorkspaceDataProvider({ children }: PropsWithChildren) {
   const addManagedUser = (user: Omit<ManagedUser, 'id' | 'createdAt'>): string | null => {
     const allEmails = [
       ...managedUsers.map((u) => u.email.toLowerCase()),
-      ...['admin@trygc.local', 'manager@trygc.local', 'finance@trygc.local', 'joud@trygc.local'],
+      ...SEEDED_USER_EMAILS,
     ]
     if (allEmails.includes(user.email.trim().toLowerCase())) return 'Email already in use.'
     if (!user.name.trim()) return 'Name is required.'
