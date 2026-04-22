@@ -33,6 +33,8 @@ describe('App auth flow', () => {
   it('renders the workspace after signing in with the seeded admin account', async () => {
     const { container } = render(<App />)
 
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'admin@trygc.local' } })
+    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'admin123' } })
     fireEvent.click(screen.getByRole('button', { name: 'Sign In' }))
 
     await Promise.resolve()

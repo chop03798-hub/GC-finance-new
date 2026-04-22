@@ -1270,34 +1270,6 @@ input, select, textarea { font-family: var(--font); outline: none; }
   grid-column: 1 / -1;
 }
 
-.auth-presets {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.auth-preset-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.auth-preset {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-small);
-  background: var(--bg2);
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  color: var(--text2);
-  text-align: left;
-}
-
-.auth-preset strong {
-  color: var(--text1);
-}
-
 .topbar-bot {
   min-width: 128px;
   display: inline-flex;
@@ -1453,8 +1425,7 @@ input, select, textarea { font-family: var(--font); outline: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 900px) {
-  .auth-form,
-  .auth-preset-grid {
+  .auth-form {
     grid-template-columns: 1fr;
   }
 }
